@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Details</title>
+
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: blanchedalmond;
+            text-align: center;
+        }
+
+        .card {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .card h2 {
+            color: #947b7b;
+        }
+
+        .card-content {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .card-content p {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+<div th:replace="navbar :: navbar"></div>
+<div class="card">
+    <h2>Expense Details</h2>
+    <div class="card-content">
+        <p><strong>Expense ID:</strong> <span th:text="${expenseDetails.expenseId}"></span></p>
+        <p><strong>Title:</strong> <span th:text="${expenseDetails.expenseTitle}"></span></p>
+        <p><strong>Amount:</strong> <span th:text="${expenseDetails.expenseAmount}"></span></p>
+        <p><strong>Split Type:</strong> <span th:text="${expenseDetails.splitType}"></span></p>
+        <p><strong>Date:</strong> <span th:text="${expenseDetails.expenseDate}"></span></p>
+        <p><strong>Time:</strong> <span th:text="${expenseDetails.expenseTime}"></span></p>
+        <hr>
+        <p><strong>Share Details:</strong></p>
+        <div th:each="userExpenseResponse : ${expenseDetails.userExpenseResponseList}">
+            <p><strong>Username:</strong> <span th:text="${userExpenseResponse.username}"></span></p>
+            <p><strong>Share:</strong> <span th:text="${userExpenseResponse.share}"></span></p>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>
