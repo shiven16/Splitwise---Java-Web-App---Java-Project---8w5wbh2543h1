@@ -109,7 +109,8 @@ public class ExpenseServiceImpl implements ExpenseService {
                     expense.getExpenseAmount(),
                     expense.getSplitType().name(),
                     expense.getExpenseDateTime().toLocalDate(),
-                    expense.getExpenseDateTime().toLocalTime()
+                    expense.getExpenseDateTime().toLocalTime(),
+                    userExpenseRepository.getUserExpenseListByExpenseId(expense.getExpenseId())
             );
 
             expenseResponseList.add(expenseResponse);
