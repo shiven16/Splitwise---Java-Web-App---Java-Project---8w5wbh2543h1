@@ -32,10 +32,7 @@ public class ExpenseController {
         ResponseEntity<?> responseEntity = expenseService.readExpenses();
 
         ExpenseResponseList expenseResponseList = (ExpenseResponseList) responseEntity.getBody();
-        List<ExpenseResponse> expenseResponses = null;
-        if (expenseResponseList != null) {
-            expenseResponses = expenseResponseList.getExpenseResponseList();
-        }
+        List<ExpenseResponse> expenseResponses = expenseResponseList.getExpenseResponseList();
 
         modelAndView.addObject("expenseList", expenseResponses);
         modelAndView.setViewName("expense-list");

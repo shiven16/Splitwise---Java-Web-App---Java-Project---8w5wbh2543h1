@@ -1,3 +1,4 @@
+
 package co.newtonschool.splitwise.response;
 
 public class GenericResponse {

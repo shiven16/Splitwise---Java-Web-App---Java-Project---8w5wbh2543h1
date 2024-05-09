@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Expense</title>
+
+  <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: blanchedalmond;
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            text-align: left;
+            width: 400px;
+            border: 1px solid #947b7b;
+            margin: 100px auto;
+            padding: 40px;
+            border-radius: 10px;
+        }
+
+        input {
+            padding: 10px;
+            border: 1px solid #947b7b;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        select {
+            padding: 10px;
+            border: 1px solid #947b7b;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        button {
+            padding: 10px;
+            border: 1px solid #947b7b;
+            border-radius: 5px;
+            outline: none;
+            cursor: pointer;
+            background-color: #947b7b;
+            color: white;
+            font-weight: bold;
+            width: 100%;
+        }
+
+        ul {
+            list-style: none;
+            display: flex;
+            justify-content: space-evenly;
+            margin: 0;
+            padding: 0;
+            gap: 10px;
+        }
+
+        li {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #split {
+            width: 40px;
+        }
+
+        #splitDetailList ul {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+            /* padding: 10px; */
+            /* border: 1px solid #947b7b; */
+            border-radius: 10px;
+            background-color: #947b7b;
+            color: white;
+            font-weight: bold;
+            list-style: none;
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body>
+<div th:replace="navbar :: navbar"></div>
+<form>
+  <h1>Add Expense</h1>
+  <label for="expenseTitle">Expense Title</label>
+  <input type="text" name="expenseTitle" id="expenseTitle">
+  <label for="expenseAmount">Expense Amount</label>
+  <input type="number" name="expenseAmount" id="expenseAmount">
+  <label for="splitType">Split Type</label>
+  <select name="splitType" id="splitType">
+    <option value="EACH">EACH</option>
+    <option value="PERCENTAGE">PERCENTAGE</option>
+    <option value="SHARE">SHARE</option>
+  </select>
+  <label for="splitDetailList">Split Detail List</label>
+  <div id="splitDetailList">
+
+  </div>
+  <ul>
+    <li>
+      <label for="userId">User ID</label>
+      <select name="userId" id="userId">
+        <option th:each="user : ${userList}" th:value="${user.id}" th:text="${user.username}"></option>
+      </select>
+    </li>
+    <li>
+      <label for="split">Split</label>
+      <input type="number" name="split" id="split">
+    </li>
+    <li>
+      <button type="button" onclick="addSplit()">Add</button>
+    </li>
+  </ul>
+  <button type="submit">Submit</button>
+</form>
+
+<script th:inline="javascript">
+
+var userList = /*[[${userList}]]*/ [];
+
+        let splitdetails = [];
+        const form = document.querySelector('form');
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const expenseTitle = document.querySelector('#expenseTitle').value;
+            const expenseAmount = document.querySelector('#expenseAmount').value;
+            const splitType = document.querySelector('#splitType').value;
+            const userId = document.querySelector('#userId').value;
+            const split = document.querySelector('#split').value;
+
+            const response = await fetch('http://localhost:8080/expenses', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+                , body: JSON.stringify({
+                    expenseTitle,
+                    expenseAmount,
+                    splitType,
+                    splitDetailList: splitdetails
+                })
+            }).then(response => response.json()).then(data => {
+                console.log(data);
+                alert(data.message);
+            })
+        })
+
+let addSplitDetails = () => {
+    const splitDetailList = document.querySelector('#splitDetailList');
+    if (splitDetailList.children.length > 0) {
+        splitDetailList.innerHTML = '';
+    }
+    let splitUl = document.createElement('ul');
+    splitUl.classList = "splitUl";
+    splitDetailList.appendChild(splitUl);
+    for (let split of splitdetails) {
+        const user = userList.find(user => user.id === Number(split.userId));
+        const username = user ? user.username : 'Unknown User';
+        const li = document.createElement('li');
+        li.textContent = `${username} - ${split.split}`;
+        splitUl.appendChild(li);
+    }
+}
+
+
+        addSplitDetails();
+
+        const addSplit = () => {
+            const userId = document.querySelector('#userId').value;
+            const split = document.querySelector('#split').value;
+            let dup = splitdetails.find((s) => s.userId === userId);
+            if (!dup&&!dup&&userId!=""&&split!="") {
+                splitdetails.push({ userId, split });
+                document.querySelector('#userId').value = '';
+                document.querySelector('#split').value = '';
+                addSplitDetails();
+            }
+        }
+
+        // const selectId = document.querySelector('#userId');
+        // const addUserId = () => {
+        //     // fetch('http://localhost:8080/users')
+        //     //     .then(response => response.json())
+        //     //     .then(data => {
+        //     //         console.log(data);
+        //     //         // data.userResponseList.forEach(user => {
+        //     //         //     const option = document.createElement('option');
+        //     //         //     option.value = user.id;
+        //     //         //     option.textContent = user.id;
+        //     //         //     selectId.appendChild(option);
+        //     //         // })
+        //     //     })
+        //     //     .catch(error => {
+        //     //         console.error('Error:', error);
+        //     // })
+        //     const option = document.createElement('option');
+        //     option.value = "ABC";
+        //     option.textContent = "ABC";
+        //     selectId.appendChild(option);
+        //     const option1 = document.createElement('option');
+        //     option1.value = "DEF";
+        //     option1.textContent = "DEF";
+        //     selectId.appendChild(option1);
+        // }
+        // addUserId();
+    </script>
+</body>
+
+</html>

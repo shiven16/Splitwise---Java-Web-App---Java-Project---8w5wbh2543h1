@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense List</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: blanchedalmond;
+            text-align: center;
+            padding: 200px auto;
+        }
+
+        table {
+            border-collapse: collapse;
+            margin: 20px auto;
+            width: 100%;
+            max-width: 800px;
+            border: 1px solid #947b7b;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th {
+            background-color: #947b7b;
+            color: white;
+            text-align: left;
+            padding: 10px;
+            text-align: center;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #947b7b;
+        }
+    </style>
+</head>
+
+<body>
+<div th:replace="navbar :: navbar"></div>
+    <div>
+        <h1>List of all expenses</h1>
+        <a href="/expenses/add">Add New Expense</a>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Amount</th>
+                <th>Type</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="expense : ${expenseList}">
+                <td th:text="${expense.expenseId}"></td>
+                <td th:text="${expense.expenseTitle}"></td>
+                <td th:text="${expense.expenseAmount}"></td>
+                <td th:text="${expense.splitType}"></td>
+                <td th:text="${expense.expenseDate}"></td>
+                <td th:text="${expense.expenseTime}"></td>
+                <td><a th:href="@{/expenses/{id}(id=${expense.expenseId})}">View</a></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+
+</html>
